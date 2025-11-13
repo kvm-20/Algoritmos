@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Algoritmos Clásicos en JavaScript</title>
+  <style>
+    /* ====== ESTILOS GENERALES ====== */
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f4f4f8;
+      padding: 30px;
+      color: #222;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    select, input, button {
+      padding: 8px;
+      margin: 6px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #0078D7;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    pre {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      white-space: pre-wrap;
+    }
+    .campo {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧮 Algoritmos Clásicos en JavaScript</h1>
+  <p>Selecciona un algoritmo y proporciona los valores solicitados:</p>
+
+  <!-- Menú desplegable para escoger el algoritmo -->
+  <select id="algoritmo" onchange="mostrarCampos()">
+    <option value="">-- Selecciona un algoritmo --</option>
+    <option value="euclides">1. Euclides</option>
+    <option value="euclides_ext">2. Euclides Extendido</option>
+    <option value="rsa">3. RSA</option>
+    <option value="fleury">4. Fleury</option>
+    <option value="dijkstra">5. Dijkstra</option>
+    <option value="colorear">6. Coloreado de Grafos</option>
+    <option value="kruskal">7. Kruskal</option>
+  </select>
+
+  <!-- Contenedor donde aparecerán los campos de entrada -->
+  <div id="campos"></div>
+
+  <!-- Botón general de ejecución -->
+  <button onclick="ejecutar()">Ejecutar</button>
+
+  <h2>Resultado:</h2>
+  <pre id="resultado"></pre>
+
+  <script>
+    // ==========================================================
+    // FUNCIÓN: mostrarCampos()
+    // Muestra los inputs que necesita cada algoritmo
+    // ==========================================================
+    function mostrarCampos() {
+      const algoritmo = document.getElementById("algoritmo").value;
+      const camposDiv = document.getElementById("campos");
+      camposDiv.innerHTML = ""; // Limpia los campos anteriores
+
+      // Dependiendo del algoritmo, creamos diferentes inputs
+      switch (algoritmo) {
+        case "euclides":
+        case "euclides_ext":
+          camposDiv.innerHTML = `
+            <label>a: <input id="a" type="number" value="48"></label>
+            <label>b: <input id="b" type="number" value="18"></label>
+            <small>Ejemplo: a=48, b=18</small>
+          `;
+          break;
+
+        case "rsa":
+          camposDiv.innerHTML = `
+            <label>p (primo): <input id="p" type="number" value="3"></label>
+            <label>q (primo): <input id="q" type="number" value="11"></label>
+            <label>e (coprimo con φ(n)): <input id="e" type="number" value="7"></label>
+            <label>Mensaje m: <input id="m" type="number" value="5"></label>
+            <small>Ejemplo: p=3, q=11, e=7, m=5</small>
+          `;
+          break;
+
+        case "fleury":
+          camposDiv.innerHTML = `
+            <small>Ejemplo: grafo con nodos 0,1,2,3 conectados como en un cuadrado</small>
+            <p>Usa el grafo predefinido en el ejemplo (no requiere entrada).</p>
+          `;
+          break;
+
+        case "dijkstra":
+          camposDiv.innerHTML = `
+            <small>Ejemplo: grafo con A,B,C,D — ejecuta desde A.</small>
+            <p>Usa el grafo predefinido en el ejemplo (no requiere entrada).</p>
+          `;
+          break;
+
+        case "colorear":
+          camposDiv.innerHTML = `
+            <small>Ejemplo: grafo simple con A,B,C,D conectados parcialmente.</small>
+            <p>Usa el grafo predefinido en el ejemplo (no requiere entrada).</p>
+          `;
+          break;
+
+        case "kruskal":
+          camposDiv.innerHTML = `
+            <small>Ejemplo: grafo con 4 nodos y 5 aristas.</small>
+            <p>Usa el grafo predefinido en el ejemplo (no requiere entrada).</p>
+          `;
+          break;
+      }
+    }
+
+    // ==========================================================
+    // 1. Algoritmo de Euclides
+    // ==========================================================
+    function euclides(a, b) {
+      let pasos = `Calculando MCD(${a}, ${b})\n`;
+      while (b !== 0) {
+        pasos += `${a} = ${b} * (${Math.floor(a / b)}) + ${a % b}\n`;
+        [a, b] = [b, a % b];
+      }
+      pasos += `El MCD es ${a}`;
+      return pasos;
+    }
+
+    // ==========================================================
+    // 2. Algoritmo de Euclides Extendido
+    // ==========================================================
+    function euclidesExtendido(a, b) {
+      if (b === 0) return {d: a, x: 1, y: 0, pasos: `Base: (${a}, 1, 0)`};
+      const rec = euclidesExtendido(b, a % b);
+      const d = rec.d;
+      const x = rec.y;
+      const y = rec.x - Math.floor(a / b) * rec.y;
+      const pasos = rec.pasos + `\nRetroceso para a=${a}, b=${b}: d=${d}, x=${x}, y=${y}`;
+      return {d, x, y, pasos};
+    }
+
+    // ==========================================================
+    // 3. RSA simplificado
+    // ==========================================================
+    function mcd(a,b){ return b===0 ? a : mcd(b, a % b); }
+
+    function inversoModular(e, phi) {
+      const res = euclidesExtendido(e, phi);
+      return ((res.x % phi) + phi) % phi;
+    }
+
+    function rsa(p, q, e, m) {
+      const n = p * q;
+      const phi = (p - 1) * (q - 1);
+      const d = inversoModular(e, phi);
+      const c = (m ** e) % n;
+      const dec = (c ** d) % n;
+      return `p=${p}, q=${q}, e=${e}, φ=${phi}, n=${n}\nClave privada d=${d}\nMensaje=${m}\nCifrado=${c}\nDescifrado=${dec}`;
+    }
+
+    // ==========================================================
+    // 4. Fleury (grafo fijo)
+    // ==========================================================
+    function fleury() {
+      const grafo = {
+        0:[1,2,3],
+        1:[0,2],
+        2:[0,1,3],
+        3:[0,2]
+      };
+      let camino = [0];
+      let u = 0;
+
+      function eliminar(u,v){
+        grafo[u] = grafo[u].filter(x => x !== v);
+        grafo[v] = grafo[v].filter(x => x !== u);
+      }
+
+      while (grafo[u] && grafo[u].length) {
+        let v = grafo[u][0];
+        eliminar(u, v);
+        camino.push(v);
+        u = v;
+      }
+      return "Camino euleriano: " + camino.join(" → ");
+    }
+
+    // ==========================================================
+    // 5. Dijkstra (grafo fijo)
+    // ==========================================================
+    function dijkstra() {
+      const grafo = {
+        A:[["B",2],["C",5]],
+        B:[["C",1],["D",4]],
+        C:[["D",2]],
+        D:[]
+      };
+      const dist = {A:0, B:Infinity, C:Infinity, D:Infinity};
+      const visitados = new Set();
+
+      while (visitados.size < Object.keys(grafo).length) {
+        let nodoMin = null;
+        for (let nodo in dist)
+          if (!visitados.has(nodo))
+            if (nodoMin === null || dist[nodo] < dist[nodoMin]) nodoMin = nodo;
+        visitados.add(nodoMin);
+        for (const [vecino, peso] of grafo[nodoMin]) {
+          if (dist[nodoMin] + peso < dist[vecino]) dist[vecino] = dist[nodoMin] + peso;
+        }
+      }
+      return "Distancias desde A:\n" + JSON.stringify(dist, null, 2);
+    }
+
+    // ==========================================================
+    // 6. Coloreado de Grafos (grafo fijo)
+    // ==========================================================
+    function colorear() {
+      const grafo = {
+        A:["B","C"],
+        B:["A","C","D"],
+        C:["A","B","D"],
+        D:["B","C"]
+      };
+      const colores = {};
+      for (let nodo in grafo) {
+        const usados = new Set(grafo[nodo].map(v => colores[v]).filter(Boolean));
+        for (let color = 1; color <= 10; color++) {
+          if (!usados.has(color)) {
+            colores[nodo] = color;
+            break;
+          }
+        }
+      }
+      return "Colores asignados:\n" + JSON.stringify(colores, null, 2);
+    }
+
+    // ==========================================================
+    // 7. Kruskal (grafo fijo)
+    // ==========================================================
+    function kruskal() {
+      const aristas = [[0,1,10],[0,2,6],[0,3,5],[1,3,15],[2,3,4]];
+      aristas.sort((a,b) => a[2]-b[2]);
+      const padre = [0,1,2,3];
+      function buscar(u){ return padre[u]===u?u:padre[u]=buscar(padre[u]); }
+      function unir(u,v){ padre[buscar(u)]=buscar(v); }
+      const mst = [];
+      for (const [u,v,p] of aristas){
+        if (buscar(u)!==buscar(v)){ unir(u,v); mst.push([u,v,p]); }
+      }
+      return "Árbol de expansión mínima:\n" + JSON.stringify(mst, null, 2);
+    }
+
+    // ==========================================================
+    // FUNCIÓN: ejecutar()
+    // Llama al algoritmo correcto y muestra el resultado
+    // ==========================================================
+    function ejecutar() {
+      const opcion = document.getElementById("algoritmo").value;
+      let salida = "";
+
+      switch (opcion) {
+        case "euclides":
+          salida = euclides(parseInt(a.value), parseInt(b.value));
+          break;
+
+        case "euclides_ext":
+          const res = euclidesExtendido(parseInt(a.value), parseInt(b.value));
+          salida = res.pasos + `\n\nMCD=${res.d}, x=${res.x}, y=${res.y}`;
+          break;
+
+        case "rsa":
+          salida = rsa(parseInt(p.value), parseInt(q.value), parseInt(e.value), parseInt(m.value));
+          break;
+
+        case "fleury":
+          salida = fleury();
+          break;
+
+        case "dijkstra":
+          salida = dijkstra();
+          break;
+
+        case "colorear":
+          salida = colorear();
+          break;
+
+        case "kruskal":
+          salida = kruskal();
+          break;
+
+        default:
+          salida = "Por favor selecciona un algoritmo.";
+      }
+
+      document.getElementById("resultado").innerText = salida;
+    }
+  </script>
+</body>
+</html>
