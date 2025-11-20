@@ -1,0 +1,115 @@
+:root {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --text-main: #f1f5f9;
+    --accent: #38bdf8;
+    --border: #334155;
+    --green: #10b981;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-main);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.container { max-width: 850px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px; }
+
+/* Header */
+.top { text-align: center; margin-bottom: 20px; }
+.top h1 { color: var(--accent); margin-bottom: 5px; }
+.subtitle { color: #94a3b8; font-style: italic; }
+
+/* Tarjetas de Algoritmos */
+.algo {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+.header-algo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.algo h2 { margin: 0; color: var(--accent); font-size: 1.4rem; }
+
+.badge {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: #334155;
+    color: #cbd5e1;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.badge.visual { background: rgba(16, 185, 129, 0.2); color: var(--green); border: 1px solid var(--green); }
+
+/* Sección Teoría (Details) */
+details.theory {
+    background: rgba(56, 189, 248, 0.05);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+summary { cursor: pointer; font-weight: bold; color: #60a5fa; }
+details p { margin: 10px 0 0 0; font-size: 0.95rem; color: #d1d5db; }
+
+/* Canvas */
+.canvas-box {
+    background: #050505;
+    border: 2px solid #334155;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+}
+canvas { max-width: 100%; background: #0a0a0a; }
+
+/* Inputs */
+.inputs { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; }
+label { display: flex; flex-direction: column; font-weight: bold; font-size: 0.9rem; color: #94a3b8; }
+input, textarea {
+    background: #0f172a; border: 1px solid var(--border); color: white;
+    padding: 8px; border-radius: 4px; font-family: monospace; margin-top: 5px;
+}
+textarea { min-width: 300px; min-height: 80px; line-height: 1.4; }
+
+/* Botón */
+button.run {
+    background-color: var(--accent);
+    color: #0f172a;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: filter 0.2s;
+}
+button.run:hover { filter: brightness(1.1); }
+
+/* Salida */
+.output {
+    margin-top: 15px;
+    background: #000;
+    padding: 15px;
+    border-radius: 6px;
+    font-family: monospace;
+    color: #4ade80;
+    border-left: 4px solid var(--green);
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
